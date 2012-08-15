@@ -2,8 +2,13 @@
 
     <string name="app_name">Make me a Playlist</string>
     <string name="hello_world">Hello world!</string>
+    
+    <!-- Menu -->
     <string name="menu_settings">Settings</string>
     <string name="title_activity_main">Make me a Playlist</string>
+    <string name="mark_no_media">Mark as no Media</string>
+    
+    <!-- Toasts -->
     <string name="no_valid_file_oder_folder">No valid File oder Folder</string>
     <string name="generate_playlist">Make Playlist</string>
     <string name="error_generating_playlist">An error occured while generating the playlist</string>
@@ -11,5 +16,9 @@
     <string name="invalid_folder">invalid folder</string>
     <string name="coming_soon">Coming soon...</string>
     <string name="no_media_files">No media files found</string>
+    
+    <!-- Buttons -->
+    <string name="audio_book">Audiobook</string>
+    <string name="single_cd">Single CD</string>
 
 </resources>

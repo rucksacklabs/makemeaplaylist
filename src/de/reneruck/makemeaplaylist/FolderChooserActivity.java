@@ -12,7 +12,6 @@ import java.util.Map;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -30,17 +29,20 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity {
+public class FolderChooserActivity extends Activity {
 
 	private static final String TAG = "Make me a Playlist";
 	private ListView folderContent;
 	private BaseAdapter fileAdapter; 
 	private File currentParentFolder;
 	private File[] currentFileList;
+	private Mode currentMode;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        this.currentMode = (Mode) getIntent().getExtras().get("mode");
         
         setCurrentFolderToDefault();
 
@@ -214,32 +216,50 @@ public class MainActivity extends Activity {
         	}
         	break;
         case R.id.generate_playlist:
-        	try {
-        		if(oldPlaylistExists())
-        		{
-        			Toast.makeText(getApplicationContext(), R.string.found_existing_playlist, Toast.LENGTH_SHORT).show();
-        		} else {
-        			if(hasMediaEntries())
-        			{
-        				Log.d(TAG, "Starting playlist generation");
-        				generatePlaylist();
-        				Log.d(TAG, "playlist generation successful");
-        			} else {
-        				if(hasSubFolders()){
-        					generatePlaylistOverAllSubfolders();
-        				}
-        			}
-        			Log.d(TAG, "trigger media scan");
-        			triggerMediaScan();
-        			displayChildEntries(this.currentParentFolder);
-        		}
-			} catch (IOException e) {
-				Toast.makeText(getApplicationContext(), R.string.error_generating_playlist, Toast.LENGTH_SHORT).show();
-				e.printStackTrace();
-			}
+        	handleGeneratePlaylistOption();
         	break;
 		}
 		return true;
+	}
+
+	private void handleGeneratePlaylistOption() {
+		try {
+			if(oldPlaylistExists())
+			{
+				Toast.makeText(getApplicationContext(), R.string.found_existing_playlist, Toast.LENGTH_SHORT).show();
+			} else {
+				switch (this.currentMode) {
+					case book_mode:
+						generatePlaylistForAudiobook();
+						break;
+					case cd_mode:
+						generatePlaylistForSingleFolder();
+						break;
+				}
+				Log.d(TAG, "trigger media scan");
+				triggerMediaScan();
+				displayChildEntries(this.currentParentFolder);
+			}
+		} catch (IOException e) {
+			Toast.makeText(getApplicationContext(), R.string.error_generating_playlist, Toast.LENGTH_SHORT).show();
+			e.printStackTrace();
+		}
+	}
+
+	private void generatePlaylistForSingleFolder() throws IOException {
+		if(hasMediaEntries())
+		{
+			Log.d(TAG, "Starting playlist generation");
+			generatePlaylist();
+			Log.d(TAG, "playlist generation successful");
+		}
+	}
+
+	private void generatePlaylistForAudiobook() throws IOException {
+		generatePlaylistForSingleFolder();
+		if(hasSubFolders()){
+			generatePlaylistOverAllSubfolders();
+		}
 	}
 
 	private void generatePlaylistOverAllSubfolders() {

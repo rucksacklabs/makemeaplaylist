@@ -9,4 +9,9 @@
         android:orderInCategory="100"
         android:showAsAction="always" />
     
+    <item android:id="@+id/no_media"
+        android:title="@string/mark_no_media"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom" />
+    
 </menu>
